@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026년 2월 불량교환 현황 보고서</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-bg: #f7f6f3;
+            --content-bg: #ffffff;
+            --text-primary: #37352f;
+            --text-secondary: rgba(55, 53, 47, 0.65);
+            --border-light: rgba(55, 53, 47, 0.09);
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            background-color: var(--primary-bg);
+        }
+        h1 { font-size: 40px; font-weight: 700; margin: 0; }
+        h2 { font-size: 24px; font-weight: 600; margin: 0 0 24px 0; }
+        h3 { font-size: 16px; font-weight: 600; margin: 0; }
+        h4 { font-size: 14px; font-weight: 600; margin: 0; }
+        .container { max-width: 1400px; margin: 0 auto; background-color: var(--primary-bg); }
+        .header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 48px 40px;
+            text-align: center;
+        }
+        .header h1 { color: white; margin-bottom: 8px; }
+        .subtitle { color: rgba(255, 255, 255, 0.9); font-size: 14px; }
+        .content { padding: 40px; }
+        .section {
+            background-color: var(--content-bg);
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-light);
+        }
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .toc-section {
+            background-color: var(--content-bg);
+            border-radius: 8px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .toc-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .toc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .toc-item:hover {
+            background-color: #e9ecef;
+            border-color: #4a5568;
+            transform: translateX(4px);
+        }
+        .toc-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .toc-text { font-weight: 600; font-size: 15px; }
+        .toc-desc { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .overview-card {
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s ease;
+        }
+        .overview-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        .overview-card h3 {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .overview-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        .overview-card .description { font-size: 13px; color: var(--text-secondary); }
+        .overview-card .change {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .change.positive { color: #10b981; }
+        .change.negative { color: #ef4444; }
+        .change-arrow { font-size: 16px; }
+        .type-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .type-card {
+            background-color: var(--content-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid #4a5568;
+        }
+        .type-card.improved { border-left-color: #10b981; }
+        .type-card.warning { border-left-color: #f59e0b; }
+        .type-card.danger { border-left-color: #ef4444; }
+        .type-card.info { border-left-color: #3b82f6; }
+        .type-card-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .type-card-value { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+        .type-card-change { font-size: 14px; font-weight: 600; }
+        .type-card-change.positive { color: #10b981; }
+        .type-card-change.negative { color: #ef4444; }
+        .chart-wrapper {
+            margin: 24px 0;
+            padding: 16px;
+            background-color: #fafafa;
+            border-radius: 6px;
+        }
+        .analysis-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4a5568;
+            padding: 20px;
+            margin: 24px 0;
+            border-radius: 4px;
+        }
+        .analysis-box-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .analysis-box-indicator {
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            border-radius: 2px;
+        }
+        .analysis-box-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .analysis-box p {
+            margin-bottom: 12px;
+            line-height: 1.8;
+            color: var(--text-primary);
+        }
+        .analysis-box p:last-child { margin-bottom: 0; }
+        .analysis-box strong { font-weight: 600; color: #2d3748; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+        thead {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid var(--border-light);
+        }
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        tbody tr:hover { background-color: #fafafa; }
+        .total-row {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            border-top: 2px solid var(--border-light);
+        }
+        .increase { color: #ef4444; font-weight: 600; }
+        .decrease { color: #10b981; font-weight: 600; }
+        .same { color: #9ca3af; font-weight: 500; }
+        td small { font-size: 11px; margin-left: 2px; }
+        td small.increase { color: #ef4444; font-weight: 500; }
+        td small.decrease { color: #10b981; font-weight: 500; }
+        td small.same { color: #9ca3af; font-weight: 500; }
+        .table-container { overflow-x: auto; }
+        .collapsible-section {
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        .collapsible-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            user-select: none;
+        }
+        .collapsible-header:hover { background-color: #f0f0f0; }
+        .collapsible-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .collapsible-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+            color: var(--text-secondary);
+        }
+        .collapsible-icon.active { transform: rotate(180deg); }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .collapsible-content.active { max-height: 5000px; }
+        .collapsible-inner { padding: 20px; }
+        .grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 32px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .target-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .target-status.achieved {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+        .target-status.missed {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>2026년 2월 불량교환 현황 보고서</h1>
+            <p class="subtitle">Monthly Defect Exchange Report</p>
+        </div>
+
+        <div class="content">
+            <!-- 목차 -->
+            <div class="toc-section">
+                <div class="toc-title">
+                    <span>📋</span>
+                    <span>목차</span>
+                </div>
+                <div class="toc-list">
+                    <a href="#section1" class="toc-item">
+                        <span class="toc-num">1</span>
+                        <div>
+                            <div class="toc-text">전체 요약</div>
+                            <div class="toc-desc">핵심 지표 및 주요 변화</div>
+                        </div>
+                    </a>
+                    <a href="#section2" class="toc-item">
+                        <span class="toc-num">2</span>
+                        <div>
+                            <div class="toc-text">월별 추이</div>
+                            <div class="toc-desc">불량교환 건수, 서비스 건수, 불량교환율</div>
+                        </div>
+                    </a>
+                    <a href="#section2-1" class="toc-item">
+                        <span class="toc-num" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">2-1</span>
+                        <div>
+                            <div class="toc-text">2026년 목표 달성 현황</div>
+                            <div class="toc-desc">월별 목표 대비 실적 분석</div>
+                        </div>
+                    </a>
+                    <a href="#section3" class="toc-item">
+                        <span class="toc-num">3</span>
+                        <div>
+                            <div class="toc-text">설치법인별 분석</div>
+                            <div class="toc-desc">설치법인별 불량교환 현황</div>
+                        </div>
+                    </a>
+                    <a href="#section4" class="toc-item">
+                        <span class="toc-num">4</span>
+                        <div>
+                            <div class="toc-text">불량교환 유형</div>
+                            <div class="toc-desc">유형별 증감 현황 및 제품군별 분석</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 1. 전체 요약 -->
+            <div class="section" id="section1">
+                <div class="section-title">
+                    <span class="section-number">1</span>
+                    <h2>전체 요약</h2>
+                </div>
+                <div class="overview-cards">
+                    <div class="overview-card">
+                        <h3>불량교환 총 건수</h3>
+                        <div class="value">445건</div>
+                        <div class="description">전체 불량교환 발생 건수</div>
+                        <div class="change positive">
+                            <span class="change-arrow">▼</span>
+                            <span>전년동기 대비 313건↓ (41.3%)</span>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <h3>초기불량</h3>
+                        <div class="value">135건</div>
+                        <div class="description">전체의 30.3%</div>
+                        <div class="change" style="color: #6b7280;">
+                            <span>전월 대비 동일 (0건)</span>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <h3>서비스 총 건수</h3>
+                        <div class="value">29,734건</div>
+                        <div class="description">전체 서비스 처리 건수</div>
+                        <div class="change positive">
+                            <span class="change-arrow">▼</span>
+                            <span>전월 대비 7,460건↓ (20.1%)</span>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <h3>불량교환율</h3>
+                        <div class="value">1.50%</div>
+                        <div class="description">서비스 대비 불량교환 비율</div>
+                        <div class="change positive">
+                            <span class="change-arrow">▼</span>
+                            <span>전년동기 대비 0.50%p↓</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 전월 대비 테이블 -->
+                <h3 style="margin: 24px 0 16px 0;">전월 대비 (1월 → 2월)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>1월</th>
+                                <th>2월</th>
+                                <th>증감</th>
+                                <th>증감률</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>불량교환 건수</strong></td>
+                                <td>579건</td>
+                                <td>445건</td>
+                                <td class="decrease">-134건</td>
+                                <td class="decrease">-23.1%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>초기불량</strong></td>
+                                <td>135건</td>
+                                <td>135건</td>
+                                <td class="same">0건</td>
+                                <td class="same">0.0%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>서비스 건수</strong></td>
+                                <td>37,194건</td>
+                                <td>29,734건</td>
+                                <td class="decrease">-7,460건</td>
+                                <td class="decrease">-20.1%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>불량교환율</strong></td>
+                                <td>1.56%</td>
+                                <td>1.50%</td>
+                                <td class="decrease">-0.06%p</td>
+                                <td class="decrease">-3.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 전년동기 대비 테이블 -->
+                <h3 style="margin: 24px 0 16px 0;">전년동기 대비 (2025년 2월 → 2026년 2월)</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>2025년 2월</th>
+                                <th>2026년 2월</th>
+                                <th>증감</th>
+                                <th>증감률</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>불량교환 건수</strong></td>
+                                <td>758건</td>
+                                <td>445건</td>
+                                <td class="decrease">-313건</td>
+                                <td class="decrease">-41.3%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>초기불량</strong></td>
+                                <td>159건</td>
+                                <td>135건</td>
+                                <td class="decrease">-24건</td>
+                                <td class="decrease">-15.1%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>서비스 건수</strong></td>
+                                <td>37,885건</td>
+                                <td>29,734건</td>
+                                <td class="decrease">-8,151건</td>
+                                <td class="decrease">-21.5%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>불량교환율</strong></td>
+                                <td>2.00%</td>
+                                <td>1.50%</td>
+                                <td class="decrease">-0.50%p</td>
+                                <td class="decrease">-25.0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="analysis-box">
+                    <div class="analysis-box-header">
+                        <div class="analysis-box-indicator"></div>
+                        <h3 class="analysis-box-title">2월 주요 분석</h3>
+                    </div>
+                    <p>2월 불량교환 건수는 <strong>445건으로 전월(579건) 대비 134건 감소(23.1%↓)</strong>했으며, <strong>전년동기(758건) 대비 313건 감소(41.3%↓)</strong>하여 큰 폭의 품질 개선을 보여주고 있습니다.</p>
+                    <p><strong>불량교환율은 1.50%로 전년동기(2.00%) 대비 0.50%p 개선</strong>되었습니다. 서비스 건수가 21.5% 감소한 상황에서 불량교환은 41.3% 감소하여, 서비스 감소 이상으로 불량교환이 줄어든 점은 긍정적입니다.</p>
+                    <p><strong>초기불량은 135건으로 전월과 동일</strong>하나, 전체 불량교환 감소로 <strong>초기불량 비율이 30.3%로 상승</strong>(전월 23.3%)하여 초기 품질 관리에 주의가 필요합니다.</p>
+                </div>
+            </div>
+
+            <!-- 2. 월별 추이 분석 -->
+            <div class="section" id="section2">
+                <div class="section-title">
+                    <span class="section-number">2</span>
+                    <h2>월별 추이 분석</h2>
+                </div>
+
+                <h3 style="margin-bottom: 16px;">불량교환 건수 추이</h3>
+                <div class="chart-wrapper">
+                    <canvas id="monthlyTrendChart"></canvas>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>월</th><th>2025년</th><th>2026년</th><th>증감</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>1월</strong></td><td>653건</td><td>579건</td><td class="decrease">-74건</td></tr>
+                            <tr><td><strong>2월</strong></td><td>758건</td><td>445건</td><td class="decrease">-313건</td></tr>
+                            <tr><td><strong>3월</strong></td><td>771건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>4월</strong></td><td>871건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>5월</strong></td><td>842건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>6월</strong></td><td>984건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>7월</strong></td><td>1,563건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>8월</strong></td><td>1,575건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>9월</strong></td><td>1,604건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>10월</strong></td><td>654건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>11월</strong></td><td>642건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>12월</strong></td><td>576건</td><td>-</td><td>-</td></tr>
+                            <tr class="total-row"><td><strong>누적</strong></td><td>11,493건</td><td>1,024건</td><td class="decrease">-387건</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin: 32px 0 16px 0;">서비스 건수 추이 (2025년)</h3>
+                <div class="chart-wrapper">
+                    <canvas id="monthlyServiceChart"></canvas>
+                </div>
+
+                <h3 style="margin: 32px 0 16px 0;">불량교환율 추이</h3>
+                <div class="chart-wrapper">
+                    <canvas id="defectRateChart"></canvas>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>월</th><th>2025년</th><th>2026년</th><th>개선폭</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>1월</strong></td><td>1.97%</td><td>1.56%</td><td class="decrease">-0.41%p</td></tr>
+                            <tr><td><strong>2월</strong></td><td>2.00%</td><td>1.50%</td><td class="decrease">-0.50%p</td></tr>
+                            <tr><td><strong>3월</strong></td><td>2.00%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>4월</strong></td><td>2.17%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>5월</strong></td><td>2.10%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>6월</strong></td><td>2.26%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>7월</strong></td><td>2.72%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>8월</strong></td><td>3.89%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>9월</strong></td><td>3.56%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>10월</strong></td><td>1.88%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>11월</strong></td><td>1.87%</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>12월</strong></td><td>1.59%</td><td>-</td><td>-</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 2-1. 2026년 목표 달성 현황 -->
+            <div class="section" id="section2-1">
+                <div class="section-title">
+                    <span class="section-number" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">2-1</span>
+                    <h2>2026년 목표 달성 현황</h2>
+                </div>
+
+                <div class="overview-cards">
+                    <div class="overview-card" style="border-left: 4px solid #10b981;">
+                        <h3>2월 목표</h3>
+                        <div class="value" style="color: #10b981;">659건</div>
+                        <div class="description">2025년 실적의 87%</div>
+                    </div>
+                    <div class="overview-card" style="border-left: 4px solid #10b981;">
+                        <h3>2월 실적</h3>
+                        <div class="value">445건</div>
+                        <div class="description">실제 불량교환 건수</div>
+                        <div class="change positive">
+                            <span>목표 대비 -214건 하회 ✓</span>
+                        </div>
+                    </div>
+                    <div class="overview-card" style="border-left: 4px solid #10b981;">
+                        <h3>달성 현황</h3>
+                        <div class="value" style="color: #10b981;">달성 ✓</div>
+                        <div class="description">목표 659건 대비 445건</div>
+                        <div class="change positive">
+                            <span>목표 대비 214건 하회</span>
+                        </div>
+                    </div>
+                    <div class="overview-card" style="border-left: 4px solid #3b82f6;">
+                        <h3>연간 목표 잔여</h3>
+                        <div class="value">8,976건</div>
+                        <div class="description">10,000건 - 1,024건</div>
+                        <div class="change" style="color: #3b82f6;">
+                            <span>10개월 월평균 898건</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-box" style="border-left-color: #10b981;">
+                    <div class="analysis-box-header">
+                        <div class="analysis-box-indicator" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);"></div>
+                        <h3 class="analysis-box-title">2월 목표 달성 분석</h3>
+                    </div>
+                    <p>2월 불량교환 실적 <strong>445건</strong>은 목표 <strong>659건 대비 214건 하회</strong>하여 <strong>목표를 달성</strong>하였습니다.</p>
+                    <p><strong>전년동기(758건) 대비 41.3% 감소</strong>하여 13% 감축 목표를 크게 상회하는 성과입니다. 연간 누적 1,024건으로 목표 10,000건 대비 순조롭게 진행 중이며, 잔여 10개월 월평균 898건 이내로 관리하면 연간 목표 달성이 가능합니다.</p>
+                </div>
+
+                <h3 style="margin: 32px 0 16px 0;">2026년 월별 목표 vs 실적</h3>
+                <div class="chart-wrapper">
+                    <canvas id="target2026Chart"></canvas>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>월</th><th>2025년 실적</th><th>2026년 목표</th><th>2026년 실적</th><th>목표 대비</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1월</strong></td>
+                                <td>653건</td>
+                                <td style="color: #10b981; font-weight: 600;">568건</td>
+                                <td><strong>579건</strong></td>
+                                <td class="increase">+11건</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2월</strong></td>
+                                <td>758건</td>
+                                <td style="color: #10b981; font-weight: 600;">659건</td>
+                                <td><strong>445건</strong></td>
+                                <td class="decrease">-214건 ✓</td>
+                            </tr>
+                            <tr><td><strong>3월</strong></td><td>771건</td><td style="color: #10b981; font-weight: 600;">671건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>4월</strong></td><td>871건</td><td style="color: #10b981; font-weight: 600;">758건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>5월</strong></td><td>842건</td><td style="color: #10b981; font-weight: 600;">733건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>6월</strong></td><td>984건</td><td style="color: #10b981; font-weight: 600;">856건</td><td>-</td><td>-</td></tr>
+                            <tr style="background-color: #fef3c7;"><td><strong>7월</strong></td><td>1,563건</td><td style="color: #f59e0b; font-weight: 600;">1,360건</td><td>-</td><td>⚠️ 성수기</td></tr>
+                            <tr style="background-color: #fef3c7;"><td><strong>8월</strong></td><td>1,575건</td><td style="color: #f59e0b; font-weight: 600;">1,370건</td><td>-</td><td>⚠️ 성수기</td></tr>
+                            <tr style="background-color: #fef3c7;"><td><strong>9월</strong></td><td>1,604건</td><td style="color: #f59e0b; font-weight: 600;">1,395건</td><td>-</td><td>⚠️ 성수기</td></tr>
+                            <tr><td><strong>10월</strong></td><td>654건</td><td style="color: #10b981; font-weight: 600;">569건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>11월</strong></td><td>642건</td><td style="color: #10b981; font-weight: 600;">559건</td><td>-</td><td>-</td></tr>
+                            <tr><td><strong>12월</strong></td><td>576건</td><td style="color: #10b981; font-weight: 600;">502건</td><td>-</td><td>-</td></tr>
+                            <tr class="total-row">
+                                <td><strong>합계</strong></td>
+                                <td>11,493건</td>
+                                <td style="color: #10b981; font-weight: 700;">10,000건</td>
+                                <td><strong>1,024건</strong></td>
+                                <td>진행중</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin: 32px 0 16px 0;">분기별 목표 요약</h3>
+                <div class="grid-2col">
+                    <div>
+                        <div class="chart-wrapper">
+                            <canvas id="quarterlyTargetChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>분기</th><th>목표</th><th>실적</th><th>잔여</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>1분기 (1~3월)</strong></td><td style="color: #10b981; font-weight: 600;">1,898건</td><td>1,024건</td><td>874건</td></tr>
+                                    <tr><td><strong>2분기 (4~6월)</strong></td><td style="color: #10b981; font-weight: 600;">2,347건</td><td>-</td><td>2,347건</td></tr>
+                                    <tr style="background-color: #fef3c7;"><td><strong>3분기 (7~9월)</strong></td><td style="color: #f59e0b; font-weight: 600;">4,125건</td><td>-</td><td>4,125건</td></tr>
+                                    <tr><td><strong>4분기 (10~12월)</strong></td><td style="color: #10b981; font-weight: 600;">1,630건</td><td>-</td><td>1,630건</td></tr>
+                                    <tr class="total-row"><td><strong>연간</strong></td><td style="color: #10b981; font-weight: 700;">10,000건</td><td>1,024건</td><td>8,976건</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 설치법인별 분석 -->
+            <div class="section" id="section3">
+                <div class="section-title">
+                    <span class="section-number">3</span>
+                    <h2>설치법인별 분석</h2>
+                </div>
+
+                <div class="grid-2col">
+                    <div>
+                        <h3 style="margin-bottom: 16px;">불량교환율 상위 5개 설치법인</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="topBranchesChart"></canvas>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>순위</th><th>설치법인</th><th>불량교환율</th><th>불량/서비스</th></tr></thead>
+                                <tbody>
+                                    <tr><td>1</td><td><strong>보령</strong></td><td>3.75%</td><td>3건 / 80건</td></tr>
+                                    <tr><td>2</td><td><strong>원주</strong></td><td>3.55%</td><td>20건 / 563건</td></tr>
+                                    <tr><td>3</td><td><strong>이천</strong></td><td>3.13%</td><td>6건 / 192건</td></tr>
+                                    <tr><td>4</td><td><strong>화성</strong></td><td>2.49%</td><td>19건 / 763건</td></tr>
+                                    <tr><td>5</td><td><strong>강릉</strong></td><td>2.43%</td><td>6건 / 247건</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 16px;">불량교환율 하위 5개 설치법인</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="bottomBranchesChart"></canvas>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>순위</th><th>설치법인</th><th>불량교환율</th><th>불량/서비스</th></tr></thead>
+                                <tbody>
+                                    <tr><td>1</td><td><strong>북부</strong></td><td>0.00%</td><td>0건 / 791건</td></tr>
+                                    <tr><td>2</td><td><strong>광주</strong></td><td>0.19%</td><td>2건 / 1,047건</td></tr>
+                                    <tr><td>3</td><td><strong>안동</strong></td><td>0.56%</td><td>2건 / 359건</td></tr>
+                                    <tr><td>4</td><td><strong>동대구</strong></td><td>0.66%</td><td>3건 / 456건</td></tr>
+                                    <tr><td>5</td><td><strong>창원</strong></td><td>0.69%</td><td>5건 / 724건</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2col" style="margin-top: 32px;">
+                    <div>
+                        <h3 style="margin-bottom: 16px;">전월 대비 개선 상위 5개 설치법인</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="improvedBranchesChart"></canvas>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>순위</th><th>설치법인</th><th>개선폭</th><th>1월→2월</th></tr></thead>
+                                <tbody>
+                                    <tr><td>1</td><td><strong>평택</strong></td><td class="decrease">-1.35%p</td><td>2.74% → 1.39%</td></tr>
+                                    <tr><td>2</td><td><strong>포항</strong></td><td class="decrease">-1.22%p</td><td>2.41% → 1.19%</td></tr>
+                                    <tr><td>3</td><td><strong>보령</strong></td><td class="decrease">-0.92%p</td><td>4.67% → 3.75%</td></tr>
+                                    <tr><td>4</td><td><strong>동부산</strong></td><td class="decrease">-0.68%p</td><td>1.54% → 0.86%</td></tr>
+                                    <tr><td>5</td><td><strong>광주</strong></td><td class="decrease">-0.67%p</td><td>0.86% → 0.19%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="margin-bottom: 16px;">전월 대비 악화 상위 5개 설치법인</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="worsenedBranchesChart"></canvas>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>순위</th><th>설치법인</th><th>악화폭</th><th>1월→2월</th></tr></thead>
+                                <tbody>
+                                    <tr><td>1</td><td><strong>원주</strong></td><td class="increase">+2.03%p</td><td>1.53% → 3.55%</td></tr>
+                                    <tr><td>2</td><td><strong>강릉</strong></td><td class="increase">+1.57%p</td><td>0.86% → 2.43%</td></tr>
+                                    <tr><td>3</td><td><strong>순천</strong></td><td class="increase">+1.34%p</td><td>0.77% → 2.11%</td></tr>
+                                    <tr><td>4</td><td><strong>이천</strong></td><td class="increase">+1.07%p</td><td>2.06% → 3.13%</td></tr>
+                                    <tr><td>5</td><td><strong>춘천</strong></td><td class="increase">+1.03%p</td><td>0.99% → 2.01%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-box">
+                    <div class="analysis-box-header">
+                        <div class="analysis-box-indicator"></div>
+                        <h3 class="analysis-box-title">설치법인별 분석</h3>
+                    </div>
+                    <p><strong>보령</strong>이 3.75%로 가장 높은 불량교환율을 기록했으나, 서비스 건수가 80건으로 적어 3건의 불량교환이 높은 비율로 반영되었습니다. <strong>원주(3.55%)</strong>는 20건으로 건수 기준도 높아 집중 관리가 필요합니다.</p>
+                    <p><strong>북부(0.00%), 광주(0.19%), 안동(0.56%)</strong>은 우수한 품질 관리를 보여주고 있습니다.</p>
+                    <p>전월 대비 <strong>평택(-1.35%p), 포항(-1.22%p), 보령(-0.92%p)</strong>이 크게 개선되었으며, <strong>원주(+2.03%p), 강릉(+1.57%p)</strong>은 전월 대비 악화되어 관리가 필요합니다.</p>
+                </div>
+
+                <!-- 설치법인 상세 테이블 -->
+                <div class="collapsible-section">
+                    <div class="collapsible-header" onclick="toggleCollapsible('branchDetail')">
+                        <div class="collapsible-title">
+                            <span>📋</span>
+                            <span>설치법인 전체 상세 보기 (44개 법인)</span>
+                        </div>
+                        <div class="collapsible-icon" id="branchDetailIcon">▼</div>
+                    </div>
+                    <div class="collapsible-content" id="branchDetail">
+                        <div class="collapsible-inner">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>순위</th>
+                                            <th>설치법인</th>
+                                            <th>불량교환 (초기불량)</th>
+                                            <th>서비스 건수</th>
+                                            <th>불량교환율 (초기비율)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="branchDetailTable">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 불량교환 유형 -->
+            <div class="section" id="section4">
+                <div class="section-title">
+                    <span class="section-number">4</span>
+                    <h2>불량교환 유형</h2>
+                </div>
+
+                <h3 class="subsection-title">4-1. 전체 불량유형 현황</h3>
+
+                <div class="grid-2col">
+                    <div>
+                        <h4 style="margin-bottom: 16px;">불량유형 TOP 10 (2월 vs 1월)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="defectTypeChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 16px;">불량유형 분포 (2월)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="defectTypePieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>순위</th><th>불량유형</th><th>1월</th><th>2월</th><th>증감</th><th>비율</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td><strong>제빙불량</strong></td><td>150건</td><td>87건</td><td class="decrease">-63건</td><td>19.6%</td></tr>
+                            <tr><td>2</td><td><strong>냉각불량</strong></td><td>114건</td><td>86건</td><td class="decrease">-28건</td><td>19.3%</td></tr>
+                            <tr><td>3</td><td><strong>누수</strong></td><td>77건</td><td>79건</td><td class="increase">+2건</td><td>17.8%</td></tr>
+                            <tr><td>4</td><td><strong>소음</strong></td><td>43건</td><td>40건</td><td class="decrease">-3건</td><td>9.0%</td></tr>
+                            <tr><td>5</td><td><strong>외관불량</strong></td><td>28건</td><td>26건</td><td class="decrease">-2건</td><td>5.8%</td></tr>
+                            <tr><td>6</td><td><strong>작동불량</strong></td><td>23건</td><td>20건</td><td class="decrease">-3건</td><td>4.5%</td></tr>
+                            <tr><td>7</td><td><strong>온수불량</strong></td><td>19건</td><td>14건</td><td class="decrease">-5건</td><td>3.1%</td></tr>
+                            <tr><td>8</td><td><strong>온수출수불량</strong></td><td>19건</td><td>11건</td><td class="decrease">-8건</td><td>2.5%</td></tr>
+                            <tr><td>9</td><td><strong>입수불량</strong></td><td>4건</td><td>9건</td><td class="increase">+5건</td><td>2.0%</td></tr>
+                            <tr><td>10</td><td><strong>4WAY</strong></td><td>3건</td><td>9건</td><td class="increase">+6건</td><td>2.0%</td></tr>
+                            <tr class="total-row"><td colspan="2"><strong>합계</strong></td><td>579건</td><td>445건</td><td class="decrease">-134건</td><td>100%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="analysis-box">
+                    <div class="analysis-box-header">
+                        <div class="analysis-box-indicator"></div>
+                        <h3 class="analysis-box-title">불량유형 분석</h3>
+                    </div>
+                    <p><strong>제빙불량(87건)과 냉각불량(86건)은 동일한 냉각계통 불량</strong>으로 분류할 수 있습니다. 두 유형을 합산하면 <strong>냉각계통 불량이 173건(전체의 38.9%)</strong>으로, 전월 264건(제빙 150건 + 냉각 114건) 대비 91건 감소(34.5%↓)했습니다. 겨울철이 지나면서 제빙 기능 사용이 줄어 제빙불량이 크게 감소(-63건)한 것이 주요 원인입니다.</p>
+                    <p><strong>누수(79건)</strong>는 전월(77건) 대비 소폭 증가하여 3위를 유지하고 있으며, <strong>입수불량(+5건), 4WAY(+6건)</strong>가 증가 추세로 모니터링이 필요합니다.</p>
+                    <p><strong>온수출수불량은 11건으로 전월(19건) 대비 8건 감소(42.1%↓)</strong>하여 개선 부품 공급 효과가 나타나고 있습니다.</p>
+                </div>
+
+                <!-- 4-2. 정수기 불량유형 -->
+                <h3 class="subsection-title">4-2. 정수기 불량유형</h3>
+                
+                <div class="grid-2col">
+                    <div>
+                        <h4 style="margin-bottom: 16px;">정수기 모델별 주요 불량유형 (2월)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="purifierDefectChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 16px;">정수기 불량유형 분포 (2월)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="purifierTypePieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>모델</th><th>제빙불량</th><th>냉각불량</th><th>누수</th><th>소음</th><th>물맛이상</th><th>온수출수</th><th>기타</th><th>합계</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>CP-SS</strong></td><td>70건</td><td>22건</td><td>-</td><td>4건</td><td>-</td><td>-</td><td>18건</td><td>114건</td></tr>
+                            <tr><td><strong>CP-AH</strong></td><td>10건</td><td>10건</td><td>20건</td><td>10건</td><td>1건</td><td>7건</td><td>14건</td><td>72건</td></tr>
+                            <tr><td><strong>CP-W</strong></td><td>-</td><td>17건</td><td>7건</td><td>9건</td><td>1건</td><td>-</td><td>5건</td><td>39건</td></tr>
+                            <tr><td><strong>CP-AM</strong></td><td>-</td><td>7건</td><td>18건</td><td>1건</td><td>-</td><td>1건</td><td>7건</td><td>34건</td></tr>
+                            <tr><td><strong>CP-F,O</strong></td><td>-</td><td>12건</td><td>2건</td><td>2건</td><td>2건</td><td>-</td><td>3건</td><td>21건</td></tr>
+                            <tr><td><strong>CP-AJ</strong></td><td>3건</td><td>3건</td><td>4건</td><td>3건</td><td>1건</td><td>-</td><td>6건</td><td>20건</td></tr>
+                            <tr><td><strong>CP-ABS</strong></td><td>2건</td><td>2건</td><td>6건</td><td>-</td><td>1건</td><td>-</td><td>5건</td><td>16건</td></tr>
+                            <tr><td><strong>기타</strong></td><td>2건</td><td>11건</td><td>9건</td><td>2건</td><td>1건</td><td>3건</td><td>10건</td><td>38건</td></tr>
+                            <tr class="total-row"><td><strong>합계</strong></td><td>87건</td><td>84건</td><td>66건</td><td>31건</td><td>7건</td><td>11건</td><td>68건</td><td>354건</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="analysis-box">
+                    <div class="analysis-box-header">
+                        <div class="analysis-box-indicator"></div>
+                        <h3 class="analysis-box-title">정수기 불량유형 분석</h3>
+                    </div>
+                    <p>정수기 불량교환은 <strong>363건</strong>으로 전체의 81.6%를 차지하며, 전월(493건) 대비 <strong>130건 감소(26.4%↓)</strong>했습니다. <strong>CP-SS 모델이 114건으로 가장 많으며, 제빙불량(70건)이 주요 이슈</strong>이나 전월(121건) 대비 51건 감소하여 개선 추세입니다.</p>
+                    <p><strong>CP-AH 모델(72건)</strong>은 <strong>누수(20건)</strong>가 가장 많은 불량유형으로, 기존 설치 제품에서의 누수 건이 지속되고 있습니다. <strong>온수출수불량(7건)</strong>은 전월(16건) 대비 9건 감소하여 개선 부품 공급 효과가 확인되고 있습니다.</p>
+                    <p><strong>CP-AM 모델(34건)</strong>은 누수(18건)가 주요 이슈로, 전월(10건) 대비 증가하여 원인 분석이 필요합니다.</p>
+                </div>
+
+                <!-- 4-3. 비데 불량유형 -->
+                <h3 class="subsection-title">4-3. 비데 불량유형</h3>
+
+                <div class="grid-2col">
+                    <div>
+                        <h4 style="margin-bottom: 16px;">비데 모델별 주요 불량유형 (2월)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="bidetDefectChart"></canvas>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 16px;">비데 불량유형 분포 (2월)</h4>
+                        <div class="chart-wrapper">
+                            <canvas id="bidetTypePieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead><tr><th>모델</th><th>노즐불량</th><th>작동불량</th><th>누수</th><th>리모컨</th><th>전원</th><th>소음</th><th>기타</th><th>합계</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>CBT-Q</strong></td><td>3건</td><td>5건</td><td>1건</td><td>-</td><td>-</td><td>1건</td><td>-</td><td>10건</td></tr>
+                            <tr><td><strong>CBT-L</strong></td><td>1건</td><td>-</td><td>2건</td><td>-</td><td>1건</td><td>-</td><td>4건</td><td>8건</td></tr>
+                            <tr><td><strong>CBT-K</strong></td><td>1건</td><td>-</td><td>-</td><td>4건</td><td>-</td><td>-</td><td>1건</td><td>6건</td></tr>
+                            <tr><td><strong>CBT-I</strong></td><td>3건</td><td>1건</td><td>-</td><td>-</td><td>1건</td><td>-</td><td>-</td><td>5건</td></tr>
+                            <tr><td><strong>CBT-P</strong></td><td>-</td><td>-</td><td>-</td><td>1건</td><td>-</td><td>2건</td><td>1건</td><td>4건</td></tr>
+                            <tr><td><strong>CBT-G</strong></td><td>-</td><td>-</td><td>1건</td><td>-</td><td>1건</td><td>-</td><td>-</td><td>2건</td></tr>
+                            <tr class="total-row"><td><strong>합계</strong></td><td>8건</td><td>6건</td><td>4건</td><td>5건</td><td>3건</td><td>3건</td><td>6건</td><td>35건</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="analysis-box">
+                    <div class="analysis-box-header">
+                        <div class="analysis-box-indicator"></div>
+                        <h3 class="analysis-box-title">비데 불량유형 분석</h3>
+                    </div>
+                    <p>비데는 전체 <strong>35건</strong>으로 전월(32건) 대비 <strong>3건 증가(9.4%↑)</strong>했습니다. 전년동기(2025년 2월) 데이터와 비교하면 유사한 수준으로, 비데 불량은 계절적 요인 없이 안정적인 추세를 유지하고 있습니다.</p>
+                    <p><strong>노즐불량(8건)</strong>이 가장 많은 불량유형이나 전월(13건) 대비 5건 감소하여 개선 추세입니다. <strong>리모컨불량(5건)</strong>은 전월(3건) 대비 증가했으며, CBT-K 모델(4건)에서 집중 발생하고 있어 지속적인 모니터링이 필요합니다.</p>
+                    <p><strong>CBT-Q(10건)</strong>은 작동불량(5건)이 주요 이슈로, 전월과 유사한 수준을 유지하고 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+window.addEventListener('load',function(){
+    if(typeof Chart==='undefined')return;
+    
+    function toggleCollapsible(id){
+        const c=document.getElementById(id),i=document.getElementById(id+'Icon');
+        c&&i&&(c.classList.toggle('active'),i.classList.toggle('active'))
+    }
+    window.toggleCollapsible=toggleCollapsible;
+    
+    const c={blue:'#5470C6',green:'#91CC75',yellow:'#FAC858',red:'#EE6666',cyan:'#73C0DE',orange:'#FC8452',purple:'#9A60B4'};
+    Chart.defaults.font.family="'Inter',-apple-system,sans-serif";
+    Chart.defaults.font.size=12;
+    Chart.defaults.color='#37352f';
+    
+    // 월별 추이 차트
+    new Chart(document.getElementById('monthlyTrendChart'),{type:'line',data:{labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],datasets:[{label:'2025년',data:[653,758,771,871,842,984,1563,1575,1604,654,642,576],borderColor:c.blue,backgroundColor:'transparent',borderWidth:2,pointRadius:4,pointBackgroundColor:c.blue,pointBorderColor:'#fff',pointBorderWidth:2,tension:0.1},{label:'2026년',data:[579,445,null,null,null,null,null,null,null,null,null,null],borderColor:c.red,backgroundColor:'transparent',borderWidth:2,pointRadius:6,pointBackgroundColor:c.red,pointBorderColor:'#fff',pointBorderWidth:2,tension:0.1}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:2,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:15}},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(0,0,0,0.8)',padding:12,cornerRadius:6,callbacks:{label:function(ctx){return ctx.parsed.y?ctx.dataset.label+': '+ctx.parsed.y.toLocaleString()+'건':''}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0',drawBorder:false},ticks:{padding:8,callback:function(v){return v.toLocaleString()+'건'}}},x:{grid:{display:false,drawBorder:false},ticks:{padding:8}}}}});
+    
+    // 서비스 건수 차트
+    new Chart(document.getElementById('monthlyServiceChart'),{type:'bar',data:{labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],datasets:[{label:'2025년 서비스',data:[33152,37885,38597,40182,40016,43568,57414,40434,45099,34766,34422,36278],backgroundColor:c.blue,borderWidth:0,borderRadius:4},{label:'2026년 서비스',data:[37194,29734,null,null,null,null,null,null,null,null,null,null],backgroundColor:c.red,borderWidth:0,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:3,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:15}},tooltip:{backgroundColor:'rgba(0,0,0,0.8)',padding:12,cornerRadius:6,callbacks:{label:function(ctx){return ctx.parsed.y?ctx.dataset.label+': '+ctx.parsed.y.toLocaleString()+'건':''}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0',drawBorder:false},ticks:{padding:8,callback:function(v){return v.toLocaleString()+'건'}}},x:{grid:{display:false,drawBorder:false},ticks:{padding:8}}}}});
+    
+    // 불량교환율 차트
+    new Chart(document.getElementById('defectRateChart'),{type:'line',data:{labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],datasets:[{label:'2025년',data:[1.97,2.00,2.00,2.17,2.10,2.26,2.72,3.89,3.56,1.88,1.87,1.59],borderColor:c.blue,backgroundColor:'transparent',borderWidth:2,pointRadius:4,pointBackgroundColor:c.blue,pointBorderColor:'#fff',pointBorderWidth:2,tension:0.1},{label:'2026년',data:[1.56,1.50,null,null,null,null,null,null,null,null,null,null],borderColor:c.red,backgroundColor:'transparent',borderWidth:2,pointRadius:6,pointBackgroundColor:c.red,pointBorderColor:'#fff',pointBorderWidth:2,tension:0.1}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:2,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:15}},tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(0,0,0,0.8)',padding:12,cornerRadius:6,callbacks:{label:function(ctx){return ctx.parsed.y?ctx.dataset.label+': '+ctx.parsed.y.toFixed(2)+'%':''}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0',drawBorder:false},ticks:{padding:8,callback:function(v){return v.toFixed(1)+'%'}}},x:{grid:{display:false,drawBorder:false},ticks:{padding:8}}}}});
+    
+    // 2026년 목표 차트
+    new Chart(document.getElementById('target2026Chart'),{type:'bar',data:{labels:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],datasets:[{label:'2026년 목표',data:[568,659,671,758,733,856,1360,1370,1395,569,559,502],backgroundColor:'rgba(16,185,129,0.6)',borderWidth:0,borderRadius:4},{label:'2026년 실적',data:[579,445,null,null,null,null,null,null,null,null,null,null],backgroundColor:'rgba(239,68,68,0.8)',borderWidth:0,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:2.5,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:15}},tooltip:{backgroundColor:'rgba(0,0,0,0.8)',padding:12,cornerRadius:6,callbacks:{label:function(ctx){return ctx.parsed.y?ctx.dataset.label+': '+ctx.parsed.y.toLocaleString()+'건':''}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0',drawBorder:false},ticks:{padding:8,callback:function(v){return v.toLocaleString()+'건'}}},x:{grid:{display:false,drawBorder:false},ticks:{padding:8}}}}});
+    
+    // 분기별 목표 차트
+    new Chart(document.getElementById('quarterlyTargetChart'),{type:'bar',data:{labels:['1분기','2분기','3분기','4분기'],datasets:[{label:'2026년 목표',data:[1898,2347,4125,1630],backgroundColor:'rgba(16,185,129,0.6)',borderWidth:0,borderRadius:4},{label:'2026년 실적',data:[1024,0,0,0],backgroundColor:'rgba(239,68,68,0.8)',borderWidth:0,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:15}},tooltip:{backgroundColor:'rgba(0,0,0,0.8)',padding:12,cornerRadius:6,callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y.toLocaleString()+'건'}}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0',drawBorder:false},ticks:{padding:8,callback:function(v){return v.toLocaleString()+'건'}}},x:{grid:{display:false,drawBorder:false},ticks:{padding:8}}}}});
+    
+    // 설치법인 차트들
+    new Chart(document.getElementById('topBranchesChart'),{type:'bar',data:{labels:['보령','원주','이천','화성','강릉'],datasets:[{label:'불량교환율',data:[3.75,3.55,3.13,2.49,2.43],backgroundColor:c.red,borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#f0f0f0'},ticks:{callback:function(v){return v.toFixed(1)+'%'}}},y:{grid:{display:false}}}}});
+    
+    new Chart(document.getElementById('bottomBranchesChart'),{type:'bar',data:{labels:['북부','광주','안동','동대구','창원'],datasets:[{label:'불량교환율',data:[0.00,0.19,0.56,0.66,0.69],backgroundColor:c.green,borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#f0f0f0'},ticks:{callback:function(v){return v.toFixed(1)+'%'}}},y:{grid:{display:false}}}}});
+    
+    new Chart(document.getElementById('improvedBranchesChart'),{type:'bar',data:{labels:['평택','포항','보령','동부산','광주'],datasets:[{label:'개선 폭',data:[-1.35,-1.22,-0.92,-0.68,-0.67],backgroundColor:c.green,borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{display:false}},scales:{x:{reverse:true,grid:{color:'#f0f0f0'},ticks:{callback:function(v){return Math.abs(v).toFixed(1)+'%p'}}},y:{grid:{display:false}}}}});
+    
+    new Chart(document.getElementById('worsenedBranchesChart'),{type:'bar',data:{labels:['원주','강릉','순천','이천','춘천'],datasets:[{label:'악화 폭',data:[2.03,1.57,1.34,1.07,1.03],backgroundColor:c.red,borderWidth:0,borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#f0f0f0'},ticks:{callback:function(v){return v.toFixed(1)+'%p'}}},y:{grid:{display:false}}}}});
+    
+    // 불량유형 차트
+    new Chart(document.getElementById('defectTypeChart'),{type:'bar',data:{labels:['제빙불량','냉각불량','누수','소음','외관불량','작동불량','온수불량','온수출수','입수불량','4WAY'],datasets:[{label:'2월',data:[87,86,79,40,26,20,14,11,9,9],backgroundColor:c.blue,borderWidth:0,borderRadius:4},{label:'1월',data:[150,114,77,43,28,23,19,19,4,3],backgroundColor:c.red,borderWidth:0,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:15}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'},ticks:{callback:function(v){return v+'건'}}},x:{grid:{display:false}}}}});
+    
+    new Chart(document.getElementById('defectTypePieChart'),{type:'doughnut',data:{labels:['제빙불량','냉각불량','누수','소음','외관불량','작동불량','기타'],datasets:[{data:[87,86,79,40,26,20,107],backgroundColor:[c.blue,c.red,c.yellow,c.green,c.orange,c.cyan,c.purple],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12}}},cutout:'60%'}});
+    
+    // 정수기 불량유형 차트
+    new Chart(document.getElementById('purifierDefectChart'),{type:'bar',data:{labels:['CP-SS','CP-AH','CP-W','CP-AM','CP-F,O'],datasets:[{label:'제빙불량',data:[70,10,0,0,0],backgroundColor:c.blue,borderRadius:4},{label:'냉각불량',data:[22,10,17,7,12],backgroundColor:c.red,borderRadius:4},{label:'누수',data:[0,20,7,18,2],backgroundColor:c.yellow,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:10}}},scales:{y:{beginAtZero:true,stacked:false,grid:{color:'#f0f0f0'},ticks:{callback:function(v){return v+'건'}}},x:{grid:{display:false}}}}});
+    
+    new Chart(document.getElementById('purifierTypePieChart'),{type:'doughnut',data:{labels:['제빙불량','냉각불량','누수','소음','물맛이상','기타'],datasets:[{data:[87,86,67,31,8,84],backgroundColor:[c.blue,c.red,c.green,c.yellow,c.cyan,c.purple],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12}}},cutout:'60%'}});
+    
+    // 비데 불량유형 차트
+    new Chart(document.getElementById('bidetDefectChart'),{type:'bar',data:{labels:['CBT-Q','CBT-L','CBT-K','CBT-I','CBT-P'],datasets:[{label:'노즐불량',data:[3,1,1,3,0],backgroundColor:c.blue,borderRadius:4},{label:'작동불량',data:[5,0,0,1,0],backgroundColor:c.red,borderRadius:4},{label:'리모컨불량',data:[0,0,4,0,1],backgroundColor:c.yellow,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,padding:10}}},scales:{y:{beginAtZero:true,grid:{color:'#f0f0f0'},ticks:{callback:function(v){return v+'건'}}},x:{grid:{display:false}}}}});
+    
+    new Chart(document.getElementById('bidetTypePieChart'),{type:'doughnut',data:{labels:['노즐불량','작동불량','리모컨불량','누수','전원불량','기타'],datasets:[{data:[8,6,5,4,3,9],backgroundColor:[c.blue,c.red,c.yellow,c.green,c.orange,c.purple],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:true,aspectRatio:1.5,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12}}},cutout:'60%'}});
+    
+    // 설치법인 상세 데이터
+    const bd=[
+        ['강남',33,9,1947,1.70,27.3],['강릉',6,0,247,2.43,0.0],['강북',12,3,711,1.69,25.0],['강서',25,14,1468,1.70,56.0],
+        ['거제',2,1,178,1.12,50.0],['경기광주',26,9,1104,2.36,34.6],['광주',2,1,1047,0.19,50.0],['구미',4,1,494,0.81,25.0],
+        ['김제',3,0,224,1.34,0.0],['남인천',20,0,1086,1.84,0.0],['대전',11,7,968,1.14,63.6],['동대구',3,2,456,0.66,66.7],
+        ['동부',15,4,1891,0.79,26.7],['동부산',5,2,580,0.86,40.0],['목포',5,1,514,0.97,20.0],['보령',3,1,80,3.75,33.3],
+        ['북부',0,0,791,0.00,0.0],['서대구',16,5,920,1.74,31.3],['서부산',5,2,595,0.84,40.0],['서산',2,1,224,0.89,50.0],
+        ['서울산',14,1,633,2.21,7.1],['순천',11,3,522,2.11,27.3],['시흥',14,0,899,1.56,0.0],['아이플로우',3,2,null,null,66.7],
+        ['안동',2,0,359,0.56,0.0],['와이에스',6,2,null,null,33.3],['원주',20,4,563,3.55,20.0],['의왕',25,8,1332,1.88,32.0],
+        ['의정부',13,5,1199,1.08,38.5],['이천',6,1,192,3.13,16.7],['인천',17,6,862,1.97,35.3],['전주',8,2,692,1.16,25.0],
+        ['제주',7,4,438,1.60,57.1],['중부산',11,4,937,1.17,36.4],['진주',6,1,310,1.94,16.7],['창원',5,3,724,0.69,60.0],
+        ['천안',3,0,424,0.71,0.0],['청주',13,7,638,2.04,53.8],['춘천',8,3,398,2.01,37.5],['파주',11,4,647,1.70,36.4],
+        ['평택',14,2,1006,1.39,14.3],['포항',8,2,671,1.19,25.0],['한스',3,2,null,null,66.7],['화성',19,6,763,2.49,31.6]
+    ];
+    const tb=document.getElementById('branchDetailTable');
+    if(tb){
+        bd.sort((a,b)=>{if(a[3]===null)return 1;if(b[3]===null)return -1;return b[4]-a[4]});
+        bd.forEach((r,i)=>{
+            const tr=document.createElement('tr');
+            const svc=r[3]===null?'-':r[3].toLocaleString()+'건';
+            const rate=r[4]===null?'-':r[4].toFixed(2)+'%';
+            const earlyRate=r[5].toFixed(1)+'%';
+            tr.innerHTML=`<td>${i+1}</td><td><strong>${r[0]}</strong></td><td>${r[1]}건 (${r[2]}건)</td><td>${svc}</td><td>${rate} (${earlyRate})</td>`;
+            tb.appendChild(tr);
+        });
+        const tr=document.createElement('tr');
+        tr.className='total-row';
+        tr.innerHTML='<td colspan="2"><strong>전체 합계</strong></td><td>445건 (135건)</td><td>29,734건</td><td>1.50% (30.3%)</td>';
+        tb.appendChild(tr);
+    }
+});
+    </script>
+</body>
+</html>
